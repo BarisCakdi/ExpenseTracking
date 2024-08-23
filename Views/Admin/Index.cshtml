@@ -1,0 +1,178 @@
+﻿@model GainCostAndCate
+@using System.Globalization
+
+
+@{
+    Layout = "_AdminLayout";
+}
+<section class="py-5">
+    <div class="container px-4 px-lg-5 mt-5">
+        <div class="row">
+            <!-- Gelir ekleme formu -->
+            <div class="col-lg-3 mb-5">
+                <h4 style="color: #ffc107;">Yeni Gelir Ekle</h4>
+                <form class="row g-3" method="post" action="/admin/GainAdd">
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Gelir adı</label>
+                        <input required type="text" class="form-control" name="GainName">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Fiyat</label>
+                        <input required type="number" class="form-control" name="GainAmount">
+                    </div>
+                    <button class="btn btn-success">Ekle</button>
+                </form>
+            </div>
+            <!-- Mevcut gelir kontrolü -->
+            <div class="col-lg-9 mb-5">
+                <h4 style="color: #ffc107;">Gelirler</h4>
+                <!-- Mevcut gelirler tablosu -->
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Gelir İsmi</th>
+                                <th scope="col">Fiyat</th>
+                                <th scope="col">İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var post in Model.Gain)
+                            {
+                                <tr>
+                                    <td>
+                                        <input type="hidden" name="Id" value="@post.Id" />
+                                        @post.GainName
+                                    </td>
+                                    <td>
+                                        <input type="hidden" name="Name" value="@post.GainName" />
+                                        @post.GainAmount.ToString("c", CultureInfo.CreateSpecificCulture("tr-TR"))
+                                    </td>
+                                    <td>
+                                        <form method="post" action="/admin/DelGain/@post.Id">
+                                            <button type="submit" onclick="return confirm('Emin misin?')" class="btn btn-danger btn-sm">Sil</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+            <!--Kategori ekleme alanı-->
+            <div class="col-lg-3 mb-5">
+                <h4 style="color: red;">Gider Kategorisi Ekle</h4>
+                <form class="row g-3" method="post" action="/admin/AddCate">
+                    <div class="mb-3">
+                        <label class="form-label">Kategori İsmi</label>
+                        <input required type="text" class="form-control" name="CateName">
+                    </div>
+                    <button class="btn btn-success">Ekle</button>
+                </form>
+            </div>
+            <!-- Mevcut kategori kontrolü -->
+            <div class="col-lg-9 mb-5">
+                <h4 style="color: red;">Mevcut Kategoriler</h4>
+                <!-- Mevcut kategori tablosu -->
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Kategori Adı</th>
+                                <th scope="col">İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var post in Model.categories)
+                            {
+                                <tr>
+                                    <th scope="row">@post.Id</th>
+                                    <td>
+                                        <input required type="hidden" name="Id" value="@post.Id" />
+                                        @post.CateName
+                                    </td>
+                                    <td>
+                                        <form method="post" action="/admin/DelCate/@post.Id">
+                                            <button type="submit" onclick="return confirm('Emin misin?')" class="btn btn-danger btn-sm">Sil</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- Gider ekleme formu -->
+            <div class="col-lg-3 mb-5">
+                <h4 style="color: red">Yeni Gider Ekle</h4>
+                <form class="row g-3" method="post" action="/admin/CostAdd">
+                    <div class="mb-3">
+                        <select required class="form-select" aria-label="Default select example" name="CategoryId">
+                            <option selected disabled>Kategori</option>
+                            @foreach (var category in Model.categories)
+                            {
+                                <option required value="@category.Id">@category.CateName</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Gider adı</label>
+                        <input required type="text" class="form-control" name="CostName">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Fiyatı</label>
+                        <input required type="number" class="form-control" name="CostAmount">
+                    </div>
+                    <button class="btn btn-success">Ekle</button>
+                </form>
+            </div>
+            <!-- Mevcut gelir kontrolü -->
+            <div class="col-lg-9 mb-5">
+                <h4 style="color: red;">Giderler</h4>
+                <!-- Mevcut gelirler tablosu -->
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Kategori</th>
+                                <th scope="col">Gider İsmi</th>
+                                <th scope="col">Fiyat</th>
+                                <th scope="col">İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var post in Model.Cost)
+                            {
+                                <tr>
+                                    <td>
+                                        @foreach (var category in Model.categories.Where(c => c.Id == post.CategoryId))
+                                        {
+                                            <option value="@category.Id" selected>@category.CateName</option>
+                                        }
+                                    </td>
+                                    <td>
+                                        <input type="hidden" name="Id" value="@post.Id" />
+                                        @post.CostName
+                                    </td>
+                                    <td>
+                                        <input type="hidden" name="Name" value="@post.CostName" />
+                                        @post.CostAmount.ToString("c", CultureInfo.CreateSpecificCulture("tr-TR"))
+                                    </td>
+                                    <td>
+                                        <form method="post" action="/admin/DelCost/@post.Id">
+                                            <button type="submit" onclick="return confirm('Emin misin?')" class="btn btn-danger btn-sm">Sil</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

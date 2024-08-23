@@ -1,0 +1,58 @@
+﻿@{
+    string dataPoints = "[";
+
+    foreach (var item in ViewBag.Cost)
+    {
+        string category = "Kategori Yok";
+
+        foreach (var cat in ViewBag.categories)
+        {
+            if (cat.Id == item.CategoryId)
+            {
+                category = cat.CateName;
+                break;
+            }
+        }
+
+        dataPoints += $"{{ \"y\": {item.CostAmount}, \"label\": \"{category} - {item.CostName} (Gider)\", }},";
+    }
+
+    // Gelirleri ekle
+    foreach (var item in ViewBag.Gain)
+    {
+        dataPoints += $"{{ \"y\": {item.GainAmount}, \"label\": \"{item.GainName} (Gelir)\", \"color\": \"#32CD32\" }},";
+    }
+
+    dataPoints = dataPoints.TrimEnd(',') + "]";
+}
+
+<div id="chartContainer" style="height: 370px; width: 100%;"></div>
+
+<div style="margin-top: 20px; font-size: 18px;">
+    Toplam Gelir: @ViewBag.TotalIncome TL<br />
+    Toplam Gider: @ViewBag.TotalExpense TL<br />
+    Kalan Gelir: @ViewBag.RemainingIncome TL
+</div>
+
+<script src="https://cdn.canvasjs.com/canvasjs.min.js"></script>
+<script>
+    window.onload = function () {
+        var dataPoints = @Html.Raw(dataPoints);  
+
+        var chart = new CanvasJS.Chart("chartContainer", {
+            animationEnabled: true,
+            title: {
+                text: "Gelir ve Gider Tablosu"
+            },
+            data: [{
+                type: "pie",
+                startAngle: 240,
+                yValueFormatString: "##0.00\"TL\"",
+                indexLabel: "{label} {y}",
+                dataPoints: dataPoints,
+                explodeOnClick: true  
+            }]
+        });
+        chart.render();
+    }
+</script>
