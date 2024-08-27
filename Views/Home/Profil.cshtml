@@ -7,22 +7,22 @@
 <section class="book_section layout_padding text-center">
     <div class="container">
         <h1 style="color: #ffc107;">Profil Düzenle</h1>
-        @if (ViewBag.AuthError != null)
+        @if (TempData["mesaj"] != null)
         {
-            <div class="alert alert-danger mb-3" role="alert">
-                @ViewBag.AuthError
+            <div class="alert alert-success text-center rounded-pill alert-custom" role="alert">
+                <strong>@TempData["mesaj"]</strong>
             </div>
         }
-        @if (ViewBag.SuccessMessage != null)
+        @if (TempData["cate"] != null)
         {
-            <div class="alert alert-success">
-                <strong>@ViewBag.SuccessMessage</strong>
+            <div class="alert alert-warning text-center rounded-pill alert-custom" role="alert">
+                <strong>@TempData["cate"]</strong>
             </div>
         }
-        @if (ViewBag.user != null)
+        @if (TempData["cost"] != null)
         {
-            <div class="alert alert-danger mb-3" role="alert">
-                @ViewBag.user
+            <div class="alert alert-danger text-center rounded-pill alert-custom" role="alert">
+                <strong>@TempData["cost"]</strong>
             </div>
         }
         <div class="row justify-content-center">
@@ -99,3 +99,19 @@
         </div>
     </div>
 </section>
+<script>
+    // Sayfa yüklendikten sonra çalışır
+    document.addEventListener("DOMContentLoaded", function () {
+        // 4 saniye sonra mesajların kaybolmasını sağla
+        setTimeout(function () {
+            var alerts = document.querySelectorAll('.alert-custom');
+            alerts.forEach(function (alert) {
+                alert.style.transition = "opacity 0.5s ease";
+                alert.style.opacity = "0";
+                setTimeout(function () {
+                    alert.remove();
+                }, 500); // Görünürlüğü sıfırlandıktan sonra DOM'dan tamamen kaldır
+            });
+        }, 4000); // 4 saniye bekleme süresi
+    });
+</script>

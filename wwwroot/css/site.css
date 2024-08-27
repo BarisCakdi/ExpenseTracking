@@ -1,4 +1,4 @@
-html {
+﻿html {
   font-size: 14px;
 }
 
@@ -20,3 +20,50 @@ html {
 body {
   margin-bottom: 60px;
 }
+.custom-btn {
+    background-color: #ffc107;
+    border-color: #ffc107;
+    color: #000; 
+}
+.custom-btn {
+    background-color: #ffc107;
+    border-color: #ffc107;
+    color: #000; /* Yazı rengini de belirleyebilirsiniz */
+}
+
+.custom-link {
+    color: #ffc107; /* Link rengi */
+}
+
+    .custom-link:hover {
+        color: #e0a800; /* Link hover rengi */
+    }
+.custom-button {
+    background-color: #ffc107;
+    border-color: #ffc107;
+    color: #000;
+}
+
+.custom-button:hover {
+    background-color: #e0a800;
+    border-color: #d39e00;
+    color: #000;
+}
+
+    .navbar-custom .navbar-nav .nav-item .nav-link {
+        color: #fff; /* Navbar içindeki diğer linklerin rengi */
+        margin-right: 10px;
+    }
+
+    .navbar-custom .navbar-nav .nav-item .btn {
+        margin-right: 10px;
+    }
+
+.alert-custom {
+    max-width: 500px; /* Mesajların genişliğini sınırlandırır */
+    margin: 10px auto; /* Mesajları sayfa ortasında hizalar */
+    padding: 10px 20px; /* İçerik etrafındaki boşluğu ayarlar */
+}
+
+
+

@@ -9,7 +9,6 @@ namespace ExpenseTracking.Controllers
 {
     public class HomeController : Controller
     {
-        string connectionString = "";
 
         public bool CheckLogin()
         {
@@ -62,12 +61,12 @@ namespace ExpenseTracking.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ViewBag.ErrorMessage = "Eksik alan bulunuyor!";
+                TempData["cost"] = "Eksik alan bulunuyor!";
                 return View(model);
             }
             if (!string.Equals(model.Password, model.PassRepeat))
             {
-                ViewBag.ErrorMessage = "Şifreler uyuşmuyor!";
+                TempData["cate"] = "Şifreler uyuşmuyor!";
                 return View(model);
             }
             using var connection = new SqlConnection(connectionString);
@@ -94,7 +93,7 @@ namespace ExpenseTracking.Controllers
                 model.CreatedDate
             };
             var rowsAffected = connection.Execute(sql, data);
-
+            TempData["mesaj"] = "Hoş geldiniz giriş yaparak mali durumunuzu kontrol altına alabilirsiniz";
             return View("giris");
 
 
@@ -103,7 +102,6 @@ namespace ExpenseTracking.Controllers
         public IActionResult Giris(string? nickname)
         {
             ViewData["Title"] = "Giriş";
-            ViewBag.AuthError = TempData["AuthError"] as string;
             return View(new User());
         }
         [HttpPost]
@@ -111,7 +109,7 @@ namespace ExpenseTracking.Controllers
         {
             if (string.IsNullOrEmpty(model.Email) || string.IsNullOrEmpty(model.Password))
             {
-                TempData["AuthError"] = "Mail veya şifre boş olamaz!";
+                TempData["cost"] = "Mail veya şifre boş olamaz!";
                 return RedirectToAction("giris");
             }
             using var connection = new SqlConnection(connectionString);
@@ -124,7 +122,7 @@ namespace ExpenseTracking.Controllers
                 HttpContext.Session.SetInt32("id", user.Id);
                 return RedirectToAction("Index");
             }
-            TempData["AuthError"] = "Mail veya şifre hatalı";
+            TempData["cost"] = "Mail veya şifre hatalı";
             return RedirectToAction("giris");
         }
 
@@ -185,8 +183,8 @@ namespace ExpenseTracking.Controllers
             if (login != null)
             {
                 ViewData["nickname"] = HttpContext.Session.GetString("nickname");
-                ViewBag.ErrorMessage = "Bu isim mevcut";
-                return View("Message");
+                TempData["cost"] = "Bu isim mevcut";
+                return RedirectToAction("profil");
 
             }
             var sql = "UPDATE users SET NickName = @NickName WHERE Id = @Id";
@@ -198,8 +196,10 @@ namespace ExpenseTracking.Controllers
             var rowAffected = connection.Execute(sql, param);
             HttpContext.Session.SetString("nickname", model.NickName);
             ViewData["nickname"] = HttpContext.Session.GetString("nickname");
-            ViewBag.Message = "NickName güncellenmiştir.";
-            return View("Message");
+            TempData["mesaj"] = "Nick güncellenmiştir";
+            return RedirectToAction("profil");
+
+
         }
         [HttpPost]
         [Route("NameEdit/{id}")]
@@ -215,8 +215,8 @@ namespace ExpenseTracking.Controllers
             };
             var rowAffected = connection.Execute(sql, param);
             ViewData["nickname"] = HttpContext.Session.GetString("nickname");
-            ViewBag.Message = "İsminiz güncellenmiştir.";
-            return View("Message");
+            TempData["mesaj"] = "İsim güncellenmiştir";
+            return RedirectToAction("profil");
         }
 
         [HttpPost]
@@ -226,8 +226,8 @@ namespace ExpenseTracking.Controllers
             if (model.Password != model.PassRepeat)
             {
                 ViewData["nickname"] = HttpContext.Session.GetString("nickname");
-                ViewBag.ErrorMessage = "Şifreler uyuşmuyor.";
-                return View("Message", model);
+                TempData["cost"] = "Şifreler uyuşmuyor.";
+                return RedirectToAction("profil",model);
 
             }
             using var connection = new SqlConnection(connectionString);
@@ -240,8 +240,8 @@ namespace ExpenseTracking.Controllers
             };
             var rowAffected = connection.Execute(sql, data);
             ViewData["nickname"] = HttpContext.Session.GetString("nickname");
-            ViewBag.Message = "Şifreniz güncellenmiştir.";
-            return View("Message");
+            TempData["mesaj"] = "Şifreniz güncellenmiştir";
+            return RedirectToAction("profil");
         }
         [HttpPost]
         [Route("FotoEdit/{id}")]
@@ -269,8 +269,8 @@ namespace ExpenseTracking.Controllers
             var rowAffected = connection.Execute(sql, data);
             ViewData["nickname"] = HttpContext.Session.GetString("nickname");
 
-            ViewBag.Message = "Fotorafınız güncellenmiştir.";
-            return View("Message");
+            TempData["mesaj"] = "Profil fotorafınız güncellenmiştir";
+            return RedirectToAction("profil"); ;
         }
     }
 }

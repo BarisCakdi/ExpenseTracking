@@ -7,7 +7,6 @@ namespace ExpenseTracking.Controllers
 {
     public class AdminController : Controller
     {
-        string connectionString = "";
         public bool CheckLogin()
         {
             if (string.IsNullOrEmpty(HttpContext.Session.GetString("nickname")))
@@ -50,8 +49,8 @@ namespace ExpenseTracking.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ViewBag.ErrorMessage = "Eksik veya hatalı işlem yaptın";
-                return View("Message");
+                TempData["cost"] = "Eksik veya hatalı işlem yaptın";
+                return RedirectToAction("index");
             }
             using var connection = new SqlConnection(connectionString);
             model.UserId = (int)HttpContext.Session.GetInt32("id");
@@ -63,8 +62,8 @@ namespace ExpenseTracking.Controllers
             };
             var rowsAffected = connection.Execute(cate, data);
             ViewData["nickname"] = HttpContext.Session.GetString("nickname");
-            ViewBag.Message = "Eklendi";
-            return View("Message");
+            TempData["cate"] = "Kategori eklenmiştir";
+            return RedirectToAction("index");
         }
         [HttpPost]
         public IActionResult DelCate(int id)
@@ -72,6 +71,7 @@ namespace ExpenseTracking.Controllers
             using var connection = new SqlConnection(connectionString);
             var sql = "DELETE FROM Category WHERE Id = @id";
             var rowsAffected = connection.Execute(sql, new { id });
+            TempData["cost"] = "Kategori silinmiştir";
             return RedirectToAction("index");
         }
         public int? UserIdGetir(string? email)
@@ -96,6 +96,7 @@ namespace ExpenseTracking.Controllers
                 model.UserId,
             };
             var rowsAffected = connection.Execute(sql,data);
+            TempData["mesaj"] = "Gelir eklenmiştir";
             return RedirectToAction("index");
         }
         [HttpPost]
@@ -104,6 +105,7 @@ namespace ExpenseTracking.Controllers
             using var connection = new SqlConnection(connectionString);
             var sql = "DELETE FROM gain WHERE Id = @id";
             connection.Execute(sql, new { id });
+            TempData["cost"] = "Gelir silinmiştir";
             return RedirectToAction("index");
         }
 
@@ -112,8 +114,8 @@ namespace ExpenseTracking.Controllers
         {
             if (model.CategoryId == null)
             {
-                ViewBag.ErrorMessage = "Kategorisi olmayan gider ekleyemezsin!";
-                return View("Message");
+                TempData["cost"] = "Kategori olmadan ekleyemezsiniz";
+                return RedirectToAction("index");
             }
             ViewData["nickname"] = HttpContext.Session.GetString("nickname");
             ViewData["id"] = HttpContext.Session.GetInt32("id");
@@ -128,6 +130,7 @@ namespace ExpenseTracking.Controllers
                 model.UserId,
             };
             var rowAffected = connection.Execute(sql, data);
+            TempData["cost"] = "Gider eklenmiştir";
             return RedirectToAction("index");
         }
         [HttpPost]
@@ -136,6 +139,7 @@ namespace ExpenseTracking.Controllers
             using var connection = new SqlConnection(connectionString);
             var sql = "DELETE FROM cost WHERE Id = @id";
             connection.Execute(sql, new { id });
+            TempData["cost"] = "Gider silinmiştir";
             return RedirectToAction("index");
         }
     }

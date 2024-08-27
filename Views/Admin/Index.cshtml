@@ -1,18 +1,34 @@
 ﻿@model GainCostAndCate
 @using System.Globalization
-
-
 @{
     Layout = "_AdminLayout";
 }
+@if (TempData["mesaj"] != null)
+{
+    <div class="alert alert-success text-center rounded-pill alert-custom" role="alert">
+        <strong>@TempData["mesaj"]</strong>
+    </div>
+}
+@if (TempData["cate"] != null)
+{
+    <div class="alert alert-warning text-center rounded-pill alert-custom" role="alert">
+        <strong>@TempData["cate"]</strong>
+    </div>
+}
+@if (TempData["cost"] != null)
+{
+    <div class="alert alert-danger text-center rounded-pill alert-custom" role="alert">
+        <strong>@TempData["cost"]</strong>
+    </div>
+}
+
 <section class="py-5">
-    <div class="container px-4 px-lg-5 mt-5">
         <div class="row">
             <!-- Gelir ekleme formu -->
             <div class="col-lg-3 mb-5">
                 <h4 style="color: #ffc107;">Yeni Gelir Ekle</h4>
                 <form class="row g-3" method="post" action="/admin/GainAdd">
-                    
+
                     <div class="mb-3">
                         <label class="form-label">Gelir adı</label>
                         <input required type="text" class="form-control" name="GainName">
@@ -174,5 +190,21 @@
                 </div>
             </div>
         </div>
-    </div>
 </section>
+
+<script>
+    // Sayfa yüklendikten sonra çalışır
+    document.addEventListener("DOMContentLoaded", function () {
+        // 4 saniye sonra mesajların kaybolmasını sağla
+        setTimeout(function () {
+            var alerts = document.querySelectorAll('.alert-custom');
+            alerts.forEach(function (alert) {
+                alert.style.transition = "opacity 0.5s ease";
+                alert.style.opacity = "0";
+                setTimeout(function () {
+                    alert.remove();
+                }, 500); // Görünürlüğü sıfırlandıktan sonra DOM'dan tamamen kaldır
+            });
+        }, 4000); // 4 saniye bekleme süresi
+    });
+</script>

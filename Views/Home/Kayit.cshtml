@@ -7,38 +7,44 @@
         <h1 style="color: #ffc107;">
             Gider takip uygulamasına hoş geldiniz!
         </h1>
-        @if (ViewBag.ErrorMessage != null)
+        @if (TempData["mesaj"] != null)
         {
-            <div class="alert alert-danger mb-3" role="alert">
-                @ViewBag.ErrorMessage
+            <div class="alert alert-success text-center rounded-pill alert-custom" role="alert">
+                <strong>@TempData["mesaj"]</strong>
             </div>
         }
-        @if (ViewBag.SuccessMessage != null)
+        @if (TempData["cate"] != null)
         {
-            <div class="alert alert-success">
-                <strong>@ViewBag.SuccessMessage</strong>
+            <div class="alert alert-warning text-center rounded-pill alert-custom" role="alert">
+                <strong>@TempData["cate"]</strong>
+            </div>
+        }
+        @if (TempData["cost"] != null)
+        {
+            <div class="alert alert-danger text-center rounded-pill alert-custom" role="alert">
+                <strong>@TempData["cost"]</strong>
             </div>
         }
         <div class="row justify-content-center">
             <div class="col-md-6">
-                <div class="form_container">
+                <div class="form_container mt-2">
                     <form id="registrationForm" method="post" action="/home/Kayit" autocomplete="off">
                         <div>
-                            <input type="text" name="NickName" class="form-control" placeholder="NickName" />
+                            <input type="text" name="NickName" class="form-control mt-2" placeholder="NickName" />
                         </div>
                         <div>
-                            <input type="text" name="Name" class="form-control" placeholder="İsim Soyisim" />
+                            <input type="text" name="Name" class="form-control mt-2" placeholder="İsim Soyisim" />
                         </div>
                         <div>
-                            <input type="password" name="Password" class="form-control" placeholder="Şifre" />
+                            <input type="password" name="Password" class="form-control mt-2" placeholder="Şifre" />
                         </div>
                         <div>
-                            <input type="password" name="PassRepeat" class="form-control" placeholder="Şifre Tekrarı" />
+                            <input type="password" name="PassRepeat" class="form-control mt-2" placeholder="Şifre Tekrarı" />
                         </div>
                         <div>
-                            <input type="email" name="Email" class="form-control" placeholder="Mail" />
+                            <input type="email" name="Email" class="form-control mt-2" placeholder="Mail" />
                         </div>
-                        <div class="btn_box">
+                        <div class="btn_box mt-2">
                             <button type="submit" class="btn btn-primary">
                                 Kayıt Ol
                             </button>
@@ -49,5 +55,20 @@
         </div>
     </div>
 </section>
-
+<script>
+    // Sayfa yüklendikten sonra çalışır
+    document.addEventListener("DOMContentLoaded", function () {
+        // 4 saniye sonra mesajların kaybolmasını sağla
+        setTimeout(function () {
+            var alerts = document.querySelectorAll('.alert-custom');
+            alerts.forEach(function (alert) {
+                alert.style.transition = "opacity 0.5s ease";
+                alert.style.opacity = "0";
+                setTimeout(function () {
+                    alert.remove();
+                }, 500); // Görünürlüğü sıfırlandıktan sonra DOM'dan tamamen kaldır
+            });
+        }, 4000); // 4 saniye bekleme süresi
+    });
+</script>
 

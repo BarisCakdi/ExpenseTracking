@@ -1,26 +1,37 @@
-﻿@model User
-<section class="book_section layout_padding text-center">
+﻿<section class="book_section layout_padding text-center">
     <div class="container">
-            <h1 style="color: #ffc107;">
+        <h1 style="color: #ffc107;">
             Gider takip uygulamasına hoş geldiniz!
-            </h1>
-        @if (ViewBag.AuthError != null)
+        </h1>
+        @if (TempData["mesaj"] != null)
         {
-            <div class="alert alert-danger mb-3" role="alert">
-                @ViewBag.AuthError
+            <div class="alert alert-success text-center rounded-pill alert-custom" role="alert">
+                <strong>@TempData["mesaj"]</strong>
+            </div>
+        }
+        @if (TempData["cate"] != null)
+        {
+            <div class="alert alert-warning text-center rounded-pill alert-custom" role="alert">
+                <strong>@TempData["cate"]</strong>
+            </div>
+        }
+        @if (TempData["cost"] != null)
+        {
+            <div class="alert alert-danger text-center rounded-pill alert-custom" role="alert">
+                <strong>@TempData["cost"]</strong>
             </div>
         }
         <div class="row justify-content-center">
-            <div class="col-md-6">
-                <div class="form_container">
+            <div class="col-md-6 mt-3">
+                <div class="form_container text-center">
                     <form id="registrationForm" method="post" action="/home/giris" autocomplete="off">
-                        <div>
-                            <input type="text" name="Email" class="form-control" placeholder="Email" />
+                        <div class="d-flex justify-content-center">
+                            <input type="text" name="Email" class="form-control w-75" placeholder="E-posta" />
                         </div>
-                        <div>
-                            <input type="password" name="Password" class="form-control" placeholder="Şifre" />
+                        <div class="d-flex justify-content-center mt-3">
+                            <input type="password" name="Password" class="form-control w-50" placeholder="Şifre" />
                         </div>
-                        <div class="btn_box">
+                        <div class="btn_box mt-3">
                             <button type="submit" class="btn btn-primary">
                                 Giriş
                             </button>
@@ -31,4 +42,19 @@
         </div>
     </div>
 </section>
-
+<script>
+    // Sayfa yüklendikten sonra çalışır
+    document.addEventListener("DOMContentLoaded", function () {
+        // 4 saniye sonra mesajların kaybolmasını sağla
+        setTimeout(function () {
+            var alerts = document.querySelectorAll('.alert-custom');
+            alerts.forEach(function (alert) {
+                alert.style.transition = "opacity 0.5s ease";
+                alert.style.opacity = "0";
+                setTimeout(function () {
+                    alert.remove();
+                }, 500); // Görünürlüğü sıfırlandıktan sonra DOM'dan tamamen kaldır
+            });
+        }, 4000); // 4 saniye bekleme süresi
+    });
+</script>
